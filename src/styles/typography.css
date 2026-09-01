@@ -1,0 +1,43 @@
+.chalk-heading {
+  font-family: var(--font-chalk-heading);
+  letter-spacing: 1px;
+  text-shadow: 0 0 1px rgba(255,255,255,0.6), 1px 1px 2px rgba(0,0,0,0.8);
+}
+
+.chalk-subheading {
+  font-family: var(--font-chalk-subheading);
+  text-shadow: 0 0 1px rgba(255,255,255,0.4), 1px 1px 2px rgba(0,0,0,0.7);
+}
+
+.chalk-number {
+  font-family: var(--font-chalk-display);
+  font-weight: 700;
+  text-shadow: 0 0 2px rgba(255,255,255,0.5), 1px 2px 3px rgba(0,0,0,0.8);
+}
+
+.chalk-white { color: var(--chalk-white); }
+.chalk-yellow { color: var(--chalk-yellow); }
+.chalk-green { color: var(--chalk-green); }
+.chalk-red { color: var(--chalk-red); }
+.chalk-orange { color: var(--chalk-orange); }
+.chalk-blue { color: var(--chalk-blue); }
+.chalk-gold { color: var(--chalk-gold); }
+.chalk-dim { color: var(--chalk-dim); }
+
+.chalk-underline {
+  position: relative;
+  display: inline-block;
+}
+
+.chalk-underline::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: -4px;
+  right: -4px;
+  height: 3px;
+  background: currentColor;
+  opacity: 0.85;
+  border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+  transform: rotate(-0.5deg);
+}
