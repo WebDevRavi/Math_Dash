@@ -12,6 +12,7 @@ export class SaveService {
   public async save(data: {
     sound: boolean;
     showInstructions: boolean;
+    difficulty?: string;
     stats: LifetimeStats;
     achievements: Record<string, boolean>;
     veryHardUnlocked: boolean;
@@ -21,7 +22,8 @@ export class SaveService {
       schemaVersion: GAME_CONFIG.schemaVersion,
       settings: {
         sound: data.sound,
-        showInstructions: data.showInstructions
+        showInstructions: data.showInstructions,
+        difficulty: data.difficulty
       },
       statistics: {
         gamesPlayed: data.stats.gamesPlayed,

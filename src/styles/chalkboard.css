@@ -1,4 +1,36 @@
-/* Main Game Container with 16:9 Aspect Ratio */
+/* ====================================================
+   CYBER DECK CONSOLE & TERMINAL STYLES
+   Replaces chalkboard framing with high-tech Cyberpunk Rig
+   ==================================================== */
+
+/* Mobile Landscape Auto-Orientation:
+   Forces the game into landscape orientation across all mobile devices */
+@media screen and (orientation: portrait) and (max-width: 1024px) {
+  html, body {
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden !important;
+    position: fixed !important;
+  }
+
+  #app {
+    width: 100vh !important;
+    height: 100vw !important;
+    transform: rotate(90deg) !important;
+    transform-origin: top left !important;
+    position: fixed !important;
+    top: 0 !important;
+    left: 100vw !important;
+    overflow: hidden !important;
+  }
+
+  .game-viewport {
+    width: 100vh !important;
+    height: 100vw !important;
+  }
+}
+
+/* Main Game Viewport with 16:9 Aspect Ratio */
 .game-viewport {
   position: relative;
   width: 100vw;
@@ -6,11 +38,13 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #080c09;
+  background: radial-gradient(circle at 50% 50%, #0c1426 0%, #040711 100%);
   padding: env(safe-area-inset-top, 8px) env(safe-area-inset-right, 8px) env(safe-area-inset-bottom, 8px) env(safe-area-inset-left, 8px);
 }
 
-.chalkboard-frame {
+/* Cyber Deck Outer Frame */
+.chalkboard-frame,
+.cyberdeck-frame {
   position: relative;
   width: 100%;
   height: 100%;
@@ -18,39 +52,35 @@
   max-height: calc(100vw * (9 / 16) - 16px);
   aspect-ratio: 16 / 9;
   
-  /* Wood Frame border */
-  padding: 16px;
+  /* Cyber Chassis: Dark Carbon Fiber & Neon Rim */
+  padding: 14px;
   background: 
-    linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 40%),
-    linear-gradient(225deg, rgba(0,0,0,0.35) 0%, transparent 40%),
-    repeating-linear-gradient(
-      90deg,
-      var(--wood-frame-base) 0px,
-      var(--wood-frame-light) 4px,
-      var(--wood-frame-base) 8px,
-      var(--wood-frame-dark) 14px,
-      var(--wood-frame-base) 20px
-    );
-  border-radius: 14px;
+    linear-gradient(135deg, rgba(0, 240, 255, 0.12) 0%, transparent 40%),
+    linear-gradient(315deg, rgba(255, 0, 85, 0.08) 0%, transparent 35%),
+    linear-gradient(to bottom, #111a2f 0%, #090e1a 100%);
+  border: 2px solid rgba(0, 240, 255, 0.35);
+  border-radius: 16px;
   box-shadow: 
-    0 12px 36px rgba(0, 0, 0, 0.8),
-    inset 0 2px 4px rgba(255, 255, 255, 0.3),
-    inset 0 -3px 6px rgba(0, 0, 0, 0.6);
+    0 16px 48px rgba(0, 0, 0, 0.9),
+    0 0 30px rgba(0, 240, 255, 0.15),
+    inset 0 1px 2px rgba(0, 240, 255, 0.4),
+    inset 0 -2px 6px rgba(0, 0, 0, 0.8);
   display: flex;
   overflow: hidden;
 }
 
-/* Corner Screws / Bolts matching Reference @image1 & @image3 */
+/* Cyber Status LEDs in 4 corners (replacing screws) */
 .frame-bolt {
   position: absolute;
-  width: 12px;
-  height: 12px;
+  width: 10px;
+  height: 10px;
   border-radius: 50%;
-  background: radial-gradient(circle at 35% 35%, #e2e8f0 0%, #94a3b8 45%, #475569 85%, #1e293b 100%);
+  background: #00f0ff;
   box-shadow: 
-    inset 0 1px 2px rgba(255,255,255,0.8),
-    0 1px 2px rgba(0,0,0,0.7);
+    0 0 10px #00f0ff,
+    0 0 20px rgba(0, 240, 255, 0.6);
   z-index: 10;
+  animation: neonPulse 2s infinite ease-in-out;
 }
 
 .frame-bolt::after {
@@ -58,56 +88,69 @@
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 7px;
-  height: 2px;
-  background: #334155;
-  transform: translate(-50%, -50%) rotate(45deg);
-  border-radius: 1px;
+  width: 16px;
+  height: 16px;
+  border: 1px solid rgba(0, 240, 255, 0.5);
+  transform: translate(-50%, -50%);
+  border-radius: 3px;
 }
 
-.bolt-tl { top: 6px; left: 6px; }
-.bolt-tr { top: 6px; right: 6px; }
-.bolt-bl { bottom: 6px; left: 6px; }
-.bolt-br { bottom: 6px; right: 6px; }
+.bolt-tl { top: 8px; left: 8px; }
+.bolt-tr { top: 8px; right: 8px; background: #ff0055; box-shadow: 0 0 10px #ff0055; }
+.bolt-tr::after { border-color: rgba(255, 0, 85, 0.5); }
+.bolt-bl { bottom: 8px; left: 8px; background: #00ff66; box-shadow: 0 0 10px #00ff66; }
+.bolt-bl::after { border-color: rgba(0, 255, 102, 0.5); }
+.bolt-br { bottom: 8px; right: 8px; }
 
-/* Chalkboard Inner Slate */
-.chalkboard-surface {
+/* Cyber Terminal Screen Surface */
+.chalkboard-surface,
+.cyberdeck-surface {
   position: relative;
   flex: 1;
   width: 100%;
   height: 100%;
-  border-radius: 8px;
+  border-radius: 10px;
   background: 
-    radial-gradient(ellipse at 50% 45%, #24352b 0%, #15221b 60%, #0c1510 100%);
+    radial-gradient(ellipse at 50% 40%, #0d1527 0%, #060a14 70%, #03050a 100%);
+  border: 1px solid rgba(0, 240, 255, 0.2);
   box-shadow: 
-    inset 0 0 40px rgba(0, 0, 0, 0.9),
-    inset 0 3px 8px rgba(0, 0, 0, 0.8),
-    0 0 0 2px #0a110d;
+    inset 0 0 50px rgba(0, 0, 0, 0.95),
+    inset 0 0 15px rgba(0, 240, 255, 0.08);
   overflow: hidden;
   display: flex;
   flex-direction: column;
 }
 
-/* Subtle Chalk Dust Noise Layer */
-.chalk-dust-overlay {
+/* CRT Scanlines Overlay */
+.chalk-dust-overlay,
+.cyber-scanlines-overlay {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  opacity: 0.12;
-  background-image: radial-gradient(#ffffff 1px, transparent 1px);
-  background-size: 24px 24px;
-  z-index: 1;
+  background: linear-gradient(
+    rgba(18, 16, 16, 0) 50%, 
+    rgba(0, 0, 0, 0.25) 50%
+  ), linear-gradient(
+    90deg,
+    rgba(255, 0, 0, 0.02),
+    rgba(0, 255, 0, 0.01),
+    rgba(0, 0, 255, 0.02)
+  );
+  background-size: 100% 4px, 6px 100%;
+  z-index: 2;
+  opacity: 0.6;
 }
 
-/* SVG Background Chalk Doodles Layer */
-.chalk-doodles-bg {
+/* Background Cyber Circuit & Matrix Grid */
+.chalk-doodles-bg,
+.cyber-circuit-bg {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
   pointer-events: none;
-  z-index: 2;
-  opacity: 0.35;
+  z-index: 1;
+  opacity: 0.28;
 }
 
 /* Active Screen Container */
@@ -121,79 +164,108 @@
   flex-direction: column;
 }
 
-/* Chalk Hand-drawn Button Styles */
-.chalk-btn {
+/* Cyber Button Base */
+.chalk-btn,
+.cyber-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   flex-direction: column;
   position: relative;
-  transition: transform 0.12s ease, filter 0.15s ease, box-shadow 0.15s ease;
+  transition: transform 0.12s ease, filter 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
   user-select: none;
+  font-family: var(--font-cyber-display);
 }
 
-.chalk-btn:hover {
-  transform: scale(1.05);
-}
-
-.chalk-btn:active {
-  transform: scale(0.96);
-}
-
-/* Hand-drawn Circular Chalk Button */
-.chalk-btn-circle {
-  border-radius: 50%;
-  border: 3px dashed rgba(248, 250, 252, 0.7);
-  box-shadow: 
-    0 0 0 1px rgba(255, 255, 255, 0.2),
-    inset 0 0 10px rgba(255, 255, 255, 0.06),
-    0 4px 12px rgba(0, 0, 0, 0.4);
-  background: rgba(26, 40, 32, 0.35);
-}
-
-.chalk-btn-circle:hover {
-  border-color: var(--chalk-white);
-  box-shadow: 
-    0 0 15px rgba(255, 255, 255, 0.3),
-    inset 0 0 12px rgba(255, 255, 255, 0.15);
-}
-
-/* Answer Buttons matching @image4 & @image5 */
-.answer-btn {
-  width: 140px;
-  height: 140px;
-  border-radius: 50%;
-  border: 4px solid rgba(248, 250, 252, 0.85);
-  background: radial-gradient(circle, rgba(30, 48, 38, 0.7) 0%, rgba(18, 30, 24, 0.85) 100%);
-  box-shadow: 
-    0 0 10px rgba(255, 255, 255, 0.15),
-    inset 0 0 14px rgba(255, 255, 255, 0.08);
-  font-family: var(--font-chalk-display);
-  font-size: 52px;
-  font-weight: 700;
-  color: var(--chalk-white);
-  cursor: pointer;
-  outline: none;
-  position: relative;
-  transition: transform 0.1s ease, border-color 0.15s ease, box-shadow 0.15s ease;
-}
-
-.answer-btn.focused {
-  border-color: var(--chalk-yellow);
-  box-shadow: 0 0 20px rgba(248, 220, 92, 0.6), inset 0 0 15px rgba(248, 220, 92, 0.2);
+.chalk-btn:hover,
+.cyber-btn:hover {
   transform: scale(1.04);
 }
 
+.chalk-btn:active,
+.cyber-btn:active {
+  transform: scale(0.96);
+}
+
+/* Circular Cyber Action Button */
+.chalk-btn-circle,
+.cyber-btn-circle {
+  border-radius: 50%;
+  border: 2px solid rgba(0, 240, 255, 0.5);
+  box-shadow: 
+    0 0 14px rgba(0, 240, 255, 0.25),
+    inset 0 0 12px rgba(0, 240, 255, 0.15);
+  background: rgba(10, 20, 38, 0.6);
+}
+
+.chalk-btn-circle:hover,
+.cyber-btn-circle:hover {
+  border-color: var(--cyber-cyan);
+  box-shadow: 
+    0 0 24px rgba(0, 240, 255, 0.5),
+    inset 0 0 16px rgba(0, 240, 255, 0.25);
+}
+
+/* Cyber Decryption Node Answer Buttons */
+.answer-btn {
+  width: 145px;
+  height: 145px;
+  border-radius: 20px;
+  border: 2px solid rgba(0, 240, 255, 0.4);
+  background: 
+    radial-gradient(circle at 50% 30%, rgba(0, 240, 255, 0.12) 0%, rgba(7, 14, 28, 0.9) 75%),
+    linear-gradient(to bottom, rgba(14, 24, 46, 0.8), rgba(6, 11, 22, 0.95));
+  box-shadow: 
+    0 8px 24px rgba(0, 0, 0, 0.6),
+    0 0 18px rgba(0, 240, 255, 0.18),
+    inset 0 0 16px rgba(0, 240, 255, 0.08);
+  font-family: var(--font-cyber-display);
+  font-size: 52px;
+  font-weight: 800;
+  color: var(--cyber-white);
+  cursor: pointer;
+  outline: none;
+  position: relative;
+  transition: transform 0.1s ease, border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+  clip-path: polygon(14px 0%, calc(100% - 14px) 0%, 100% 14px, 100% calc(100% - 14px), calc(100% - 14px) 100%, 14px 100%, 0% calc(100% - 14px), 0% 14px);
+}
+
+.answer-btn:hover {
+  border-color: var(--cyber-cyan);
+  box-shadow: 
+    0 0 28px rgba(0, 240, 255, 0.45),
+    inset 0 0 20px rgba(0, 240, 255, 0.2);
+  transform: translateY(-2px) scale(1.03);
+}
+
+.answer-btn.focused {
+  border-color: var(--cyber-yellow);
+  box-shadow: 0 0 28px rgba(255, 183, 0, 0.6), inset 0 0 18px rgba(255, 183, 0, 0.25);
+  transform: scale(1.05);
+}
+
 .answer-btn.correct {
-  border-color: var(--chalk-green) !important;
-  box-shadow: 0 0 28px var(--chalk-green-glow), inset 0 0 18px var(--chalk-green-glow) !important;
-  color: var(--chalk-green) !important;
+  border-color: var(--cyber-green) !important;
+  box-shadow: 0 0 35px var(--cyber-green-glow), inset 0 0 25px var(--cyber-green-glow) !important;
+  color: var(--cyber-green) !important;
   animation: correctGlowPulse 0.35s ease forwards;
 }
 
 .answer-btn.wrong {
-  border-color: var(--chalk-red) !important;
-  box-shadow: 0 0 28px var(--chalk-red-glow), inset 0 0 18px var(--chalk-red-glow) !important;
-  color: var(--chalk-red) !important;
-  animation: chalkShake 0.35s ease;
+  border-color: var(--cyber-magenta) !important;
+  box-shadow: 0 0 35px var(--cyber-magenta-glow), inset 0 0 25px var(--cyber-magenta-glow) !important;
+  color: var(--cyber-magenta) !important;
+  animation: cyberGlitchShake 0.35s ease;
+}
+
+/* Key Hint Under Answer Button */
+.answer-key-hint {
+  position: absolute;
+  bottom: 8px;
+  font-family: var(--font-cyber-code);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  color: var(--cyber-dim);
+  text-transform: uppercase;
 }

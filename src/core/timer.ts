@@ -69,6 +69,15 @@ export class GameTimer {
     }
   }
 
+  public revive(additionalSeconds: number = 15): void {
+    this.initialDuration = Math.max(this.initialDuration, additionalSeconds);
+    this.durationMs = additionalSeconds * 1000;
+    this.startTime = performance.now();
+    this.isRunning = true;
+    this.isPaused = false;
+    this.loop();
+  }
+
   public addBonusSeconds(seconds: number): void {
     if (!this.isRunning) return;
     const currentRemaining = this.getRemainingSeconds();
@@ -76,6 +85,26 @@ export class GameTimer {
     const newRemaining = Math.min(maxCap, currentRemaining + seconds);
     const addedMs = (newRemaining - currentRemaining) * 1000;
     this.durationMs += addedMs;
+    this.emitTick();
+  }
+
+  public deductSeconds(seconds: number): void {
+    if (!this.isRunning) return;
+    const currentRemaining = this.getRemainingSeconds();
+    const newRemaining = Math.max(0, currentRemaining - seconds);
+    const subtractedMs = (currentRemaining - newRemaining) * 1000;
+    this.durationMs -= subtractedMs;
+    this.emitTick();
+
+    if (newRemaining <= 0) {
+      this.stop();
+      if (this.onTimeoutCallback) {
+        this.onTimeoutCallback();
+      }
+    }
+  }
+
+  public forceTick(): void {
     this.emitTick();
   }
 
@@ -108,13 +137,13 @@ export class GameTimer {
     if (!this.onTickCallback) return;
 
     const remaining = this.getRemainingSeconds();
-    const totalSec = this.durationMs / 1000;
+    const totalSec = this.initialDuration;
     const percentage = Math.min(100, Math.max(0, (remaining / totalSec) * 100));
 
     let state: TimerWarningState = 'normal';
-    if (remaining <= 5) state = 'critical';
-    else if (remaining <= 10) state = 'danger';
-    else if (remaining <= 25) state = 'warning';
+    if (remaining <= 5 || percentage <= 15) state = 'critical';
+    else if (remaining <= 10 || percentage <= 30) state = 'danger';
+    else if (remaining <= 18 || percentage <= 50) state = 'warning';
 
     this.onTickCallback({
       remainingSeconds: Math.ceil(remaining),

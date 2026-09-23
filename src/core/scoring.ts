@@ -20,12 +20,20 @@ export class ScoreManager {
     this.wrongCount = 0;
   }
 
-  public addCorrect(streak: number = 1): number {
+  public addCorrect(streak: number = 1, mode: string = 'NORMAL'): number {
     this.correctCount++;
-    // Base +1 point
-    let points = 1;
-    if (streak >= 10) points = 2; // subtle rewarding multiplier
-    this.score += points;
+    // Mode-weighted scoring so harder math and shorter time limits are properly rewarded
+    let basePoints = 1;
+    if (mode === 'VERY_HARD') basePoints = 3;
+    else if (mode === 'HARD') basePoints = 2;
+
+    // Rewarding streak bonus
+    let streakBonus = 0;
+    if (mode === 'VERY_HARD' && streak >= 4) streakBonus = 1;
+    else if (mode === 'HARD' && streak >= 5) streakBonus = 1;
+    else if (streak >= 8) streakBonus = 1;
+
+    this.score += (basePoints + streakBonus);
     return this.score;
   }
 

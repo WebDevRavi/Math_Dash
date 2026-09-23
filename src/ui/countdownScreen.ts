@@ -19,10 +19,10 @@ export class CountdownScreen {
 
   public start(): void {
     const steps = [
-      { text: '3', isGo: false, duration: 900 },
-      { text: '2', isGo: false, duration: 900 },
-      { text: '1', isGo: false, duration: 900 },
-      { text: 'GO!', isGo: true, duration: 650 }
+      { text: '3', isGo: false, duration: 850 },
+      { text: '2', isGo: false, duration: 850 },
+      { text: '1', isGo: false, duration: 850 },
+      { text: 'BREACH!', isGo: true, duration: 650 }
     ];
 
     let currentStep = 0;
@@ -59,7 +59,7 @@ export class CountdownScreen {
   private renderStep(text: string, isGo: boolean): void {
     this.container.innerHTML = `
       <div class="screen-countdown">
-        <div class="countdown-number ${isGo ? 'go' : ''}">
+        <div class="countdown-number cyber-countdown-number ${isGo ? 'go cyber-go' : ''}">
           ${text}
         </div>
       </div>

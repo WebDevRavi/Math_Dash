@@ -12,19 +12,20 @@ export class PauseModal {
 
   private render(): void {
     this.container.innerHTML = `
-      <div class="modal-overlay" style="align-items: center; justify-content: center;">
-        <div style="background: rgba(14, 26, 18, 0.95); border: 3px dashed rgba(248,250,252,0.8); border-radius: 16px; padding: 28px 36px; max-width: 440px; width: 100%; display: flex; flex-direction: column; align-items: center; gap: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.8);">
-          <h2 class="modal-title chalk-heading chalk-yellow" style="font-size: 38px;">Game Paused</h2>
-          <p style="font-family: var(--font-chalk-subheading); font-size: 18px; color: var(--chalk-white); text-align: center;">
-            Take a breather! Your timer and score are safe.
+      <div class="modal-overlay cyber-modal-overlay" style="align-items: center; justify-content: center;">
+        <div class="cyber-modal-box" style="background: rgba(8, 14, 28, 0.96); border: 2px solid var(--cyber-cyan); border-radius: 14px; padding: 28px 36px; max-width: 440px; width: 90%; display: flex; flex-direction: column; align-items: center; gap: 18px; box-shadow: 0 12px 40px rgba(0,0,0,0.9), 0 0 25px rgba(0,240,255,0.25);">
+          <div class="cyber-mono neon-cyan" style="font-size: 11px; letter-spacing: 2px;">NEURAL LINK ON STANDBY</div>
+          <h2 class="modal-title cyber-heading neon-yellow" style="font-size: 32px; letter-spacing: 2px;">PROTOCOL PAUSED</h2>
+          <p class="cyber-mono" style="font-size: 14px; color: var(--cyber-dim); text-align: center;">
+            Trace timer and node decryption telemetry safely suspended.
           </p>
 
-          <div style="display: flex; flex-direction: column; gap: 12px; width: 100%; margin-top: 10px;">
-            <button id="btn-pause-resume" class="chalk-btn" style="width: 100%; padding: 12px; border-radius: 10px; border: 2px solid var(--chalk-green); background: rgba(74, 222, 128, 0.15); font-family: var(--font-chalk-heading); font-size: 22px; color: var(--chalk-green);">
-              ▶ Resume Game
+          <div style="display: flex; flex-direction: column; gap: 12px; width: 100%; margin-top: 8px;">
+            <button id="btn-pause-resume" class="cyber-btn" style="width: 100%; padding: 12px; border-radius: 8px; border: 2px solid var(--cyber-green); background: rgba(0, 255, 102, 0.12); font-family: var(--font-cyber-display); font-size: 18px; color: var(--cyber-green); box-shadow: 0 0 15px var(--cyber-green-glow);">
+              ▶ RESUME BREACH
             </button>
-            <button id="btn-pause-exit" class="chalk-btn" style="width: 100%; padding: 12px; border-radius: 10px; border: 2px dashed var(--chalk-red); background: rgba(248, 113, 113, 0.15); font-family: var(--font-chalk-subheading); font-size: 18px; color: var(--chalk-red);">
-              ✕ Exit to Main Menu
+            <button id="btn-pause-exit" class="cyber-btn" style="width: 100%; padding: 12px; border-radius: 8px; border: 2px solid var(--cyber-magenta); background: rgba(255, 0, 85, 0.12); font-family: var(--font-cyber-ui); font-size: 16px; font-weight: 700; color: var(--cyber-magenta); letter-spacing: 1px;">
+              ✕ ABORT TO TERMINAL
             </button>
           </div>
         </div>

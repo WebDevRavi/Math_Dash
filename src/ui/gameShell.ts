@@ -10,70 +10,67 @@ export class GameShell {
   private render(): void {
     this.rootElement.innerHTML = `
       <div class="game-viewport">
-        <div class="chalkboard-frame" id="chalkboard-frame">
-          <!-- 4 Corner Metal Bolts -->
-          <div class="frame-bolt bolt-tl"></div>
-          <div class="frame-bolt bolt-tr"></div>
-          <div class="frame-bolt bolt-bl"></div>
-          <div class="frame-bolt bolt-br"></div>
+        <div class="chalkboard-frame cyberdeck-frame" id="chalkboard-frame">
+          <!-- 4 Corner Cyber Status LEDs -->
+          <div class="frame-bolt bolt-tl" title="System Normal"></div>
+          <div class="frame-bolt bolt-tr" title="Breach Protocol Active"></div>
+          <div class="frame-bolt bolt-bl" title="Neural Link Sync"></div>
+          <div class="frame-bolt bolt-br" title="Firewall Bypass"></div>
 
-          <!-- Chalkboard Inner Surface -->
-          <div class="chalkboard-surface" id="chalkboard-surface">
-            <!-- Chalk Dust Noise Overlay -->
-            <div class="chalk-dust-overlay"></div>
+          <!-- Cyber Terminal Screen Surface -->
+          <div class="chalkboard-surface cyberdeck-surface" id="chalkboard-surface">
+            <!-- CRT Scanlines Overlay -->
+            <div class="chalk-dust-overlay cyber-scanlines-overlay"></div>
 
-            <!-- Hand-drawn Chalk Doodles Background SVG Layer -->
-            <svg class="chalk-doodles-bg" viewBox="0 0 1200 675" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <!-- Top Left: 2 + 3 = 5 -->
-              <text x="70" y="110" font-family="'Patrick Hand', cursive" font-size="28" fill="#f8fafc" opacity="0.6" transform="rotate(-6 70 110)">2+3=5</text>
-              
-              <!-- Left Bulb Doodle -->
-              <g transform="translate(60, 160) scale(0.65)" stroke="#f8fafc" stroke-width="2.5" stroke-linecap="round" opacity="0.5">
-                <path d="M40 20 C25 20 15 32 15 48 C15 62 25 72 28 85 L52 85 C55 72 65 62 65 48 C65 32 55 20 40 20 Z" />
-                <path d="M30 85 L50 85 M32 92 L48 92 M35 99 L45 99" />
-                <path d="M40 5 L40 12 M15 15 L22 20 M65 15 L58 20 M5 45 L12 45 M75 45 L68 45" />
+            <!-- High-Tech Cyber Circuit & Grid SVG Background Layer -->
+            <svg class="chalk-doodles-bg cyber-circuit-bg" viewBox="0 0 1200 675" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="cyberGridGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#00f0ff" stop-opacity="0.3" />
+                  <stop offset="100%" stop-color="#ff0055" stop-opacity="0.1" />
+                </linearGradient>
+                <pattern id="hexGrid" width="40" height="40" patternUnits="userSpaceOnUse" opacity="0.12">
+                  <path d="M20 0 L40 11.5 L40 34.5 L20 46 L0 34.5 L0 11.5 Z" fill="none" stroke="#00f0ff" stroke-width="0.8" />
+                </pattern>
+              </defs>
+
+              <!-- Subtle Hex Grid Fill -->
+              <rect width="1200" height="675" fill="url(#hexGrid)" />
+
+              <!-- Top Left Circuit & System Specs -->
+              <path d="M 40 40 L 180 40 L 220 80 L 320 80" stroke="#00f0ff" stroke-width="1.5" opacity="0.4" />
+              <circle cx="320" cy="80" r="3" fill="#00f0ff" opacity="0.6" />
+              <text x="45" y="32" font-family="'JetBrains Mono', monospace" font-size="11" fill="#00f0ff" opacity="0.5" letter-spacing="1.5">NETRUNNER RIG // V4.09</text>
+              <text x="45" y="60" font-family="'JetBrains Mono', monospace" font-size="9" fill="#00f0ff" opacity="0.35">PORT: 8080 [TLS_AES_256]</text>
+
+              <!-- Top Right Circuit Traces -->
+              <path d="M 1160 40 L 1020 40 L 980 80 L 880 80" stroke="#ff0055" stroke-width="1.5" opacity="0.4" />
+              <circle cx="880" cy="80" r="3" fill="#ff0055" opacity="0.6" />
+              <text x="1000" y="32" font-family="'JetBrains Mono', monospace" font-size="11" fill="#ff0055" opacity="0.5" letter-spacing="1.5" text-anchor="end">TRACE COUNTERMEASURE</text>
+
+              <!-- Left Side Data Stream -->
+              <g opacity="0.25" font-family="'JetBrains Mono', monospace" font-size="10" fill="#00f0ff">
+                <text x="40" y="240">0x7F 0x00 0x1A</text>
+                <text x="40" y="260">0xA4 0x8C 0x3E</text>
+                <text x="40" y="280">SYS_OVERCLOCK</text>
+                <text x="40" y="300">STATUS: ACTIVE</text>
               </g>
 
-              <!-- Left Equation: 9 - 4 = 5 -->
-              <text x="65" y="340" font-family="'Patrick Hand', cursive" font-size="26" fill="#f8fafc" opacity="0.5" transform="rotate(4 65 340)">9-4=5</text>
-
-              <!-- Left Tic-Tac-Toe Grid -->
-              <g transform="translate(70, 420) scale(0.55)" stroke="#f8fafc" stroke-width="2.5" stroke-linecap="round" opacity="0.45">
-                <line x1="10" y1="35" x2="80" y2="35" />
-                <line x1="10" y1="65" x2="80" y2="65" />
-                <line x1="35" y1="10" x2="35" y2="90" />
-                <line x1="60" y1="10" x2="60" y2="90" />
-                <path d="M16 16 L28 28 M28 16 L16 28" />
-                <path d="M41 41 L53 53 M53 41 L41 53" />
-                <circle cx="70" cy="50" r="8" fill="none" />
-                <circle cx="22" cy="78" r="8" fill="none" />
-                <path d="M64 68 L76 80 M76 68 L64 80" />
+              <!-- Right Side Memory Matrix -->
+              <g opacity="0.25" font-family="'JetBrains Mono', monospace" font-size="10" fill="#00ff66">
+                <text x="1100" y="240" text-anchor="end">BUFFER: OK</text>
+                <text x="1100" y="260" text-anchor="end">LATENCY: 0.8ms</text>
+                <text x="1100" y="280" text-anchor="end">FIREWALL: ENGAGED</text>
+                <text x="1100" y="300" text-anchor="end">ENCRYPT: HYPERBOLIC</text>
               </g>
 
-              <!-- Top Right: 7 × 6 = 42 -->
-              <text x="1000" y="115" font-family="'Patrick Hand', cursive" font-size="28" fill="#f8fafc" opacity="0.6" transform="rotate(5 1000 115)">7×6=42</text>
+              <!-- Bottom Left Circuit Trace -->
+              <path d="M 40 635 L 140 635 L 180 595 L 260 595" stroke="#00f0ff" stroke-width="1.5" opacity="0.35" />
+              <circle cx="260" cy="595" r="3" fill="#00f0ff" opacity="0.5" />
 
-              <!-- Right Star Doodle -->
-              <path d="M1070 220 L1076 235 L1092 236 L1079 246 L1084 261 L1070 251 L1056 261 L1061 246 L1048 236 L1064 235 Z" stroke="#f8fafc" stroke-width="2" opacity="0.4" fill="none" />
-
-              <!-- Right Equation: 15 ÷ 3 = 5 -->
-              <text x="980" y="340" font-family="'Patrick Hand', cursive" font-size="26" fill="#f8fafc" opacity="0.5" transform="rotate(-3 980 340)">15÷3=5</text>
-
-              <!-- Paper Airplane and trail matching Reference @image3 -->
-              <g transform="translate(820, 260) scale(0.6)" stroke="#f8fafc" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.55">
-                <path d="M10 50 L90 10 L60 80 L45 55 Z" fill="none" />
-                <path d="M45 55 L90 10" />
-                <path d="M0 60 Q-40 80 -80 60 T-160 70" stroke-dasharray="6 6" fill="none" />
-              </g>
-
-              <!-- Right Triangle Doodle with a, b, c -->
-              <g transform="translate(970, 410) scale(0.6)" stroke="#f8fafc" stroke-width="2.5" stroke-linecap="round" opacity="0.5">
-                <polygon points="20,80 120,80 120,10" fill="none" />
-                <rect x="106" y="66" width="14" height="14" fill="none" />
-                <text x="65" y="100" font-family="'Patrick Hand', cursive" font-size="24" fill="#f8fafc" stroke="none">b</text>
-                <text x="130" y="50" font-family="'Patrick Hand', cursive" font-size="24" fill="#f8fafc" stroke="none">a</text>
-                <text x="60" y="40" font-family="'Patrick Hand', cursive" font-size="24" fill="#f8fafc" stroke="none">c</text>
-              </g>
+              <!-- Bottom Right Circuit Trace -->
+              <path d="M 1160 635 L 1060 635 L 1020 595 L 940 595" stroke="#ffb700" stroke-width="1.5" opacity="0.35" />
+              <circle cx="940" cy="595" r="3" fill="#ffb700" opacity="0.5" />
             </svg>
 
             <!-- Dynamic Screens Container -->

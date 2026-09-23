@@ -1,13 +1,18 @@
 export const GAME_CONFIG = {
+  // Title & game branding
+  title: 'CYBER HACK: OVERDRIVE',
+  subtitle: 'BREACH THE MAINFRAME • OVERCLOCK YOUR BRAIN',
+
   // Round timing
   baseRoundSeconds: 60,
   countdownSeconds: 3,
   
-  // Time bonus mechanics
-  fastAnswerThresholdMs: 1800,
+  // Overclock (time bonus) mechanics
+  fastAnswerThresholdMs: 1500,
   fastAnswersForTimeBonus: 3,
-  timeBonusSeconds: 5,
-  maxTimerCapSeconds: 75,
+  timeBonusSeconds: 3,
+  wrongAnswerPenaltySeconds: 2,
+  maxTimerCapSeconds: 70,
   
   // Question generation memory
   maxRecentQuestions: 14,
@@ -23,6 +28,7 @@ export const GAME_CONFIG = {
   ],
   
   // Storage keys
-  storageKey: 'mathdash_save_data_v1',
-  schemaVersion: 1
+  storageKey: 'cyberhack_save_data_v2',
+  legacyStorageKey: 'mathdash_save_data_v1',
+  schemaVersion: 2
 };

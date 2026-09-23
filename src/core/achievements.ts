@@ -8,19 +8,19 @@ export interface Achievement {
 }
 
 export const INITIAL_ACHIEVEMENTS: Achievement[] = [
-  { id: 'first_step', title: 'First Step', description: 'Solve your first equation.', icon: '✏️', unlocked: false },
-  { id: 'warm_up', title: 'Warm Up', description: 'Answer 10 questions correctly.', icon: '🔥', unlocked: false },
-  { id: 'mental_gym', title: 'Mental Gym', description: 'Answer 25 questions correctly.', icon: '🧠', unlocked: false },
-  { id: 'math_whiz', title: 'Math Whiz', description: 'Answer 50 questions correctly in a run.', icon: '⚡', unlocked: false },
-  { id: 'centurion', title: 'Centurion', description: 'Answer 100 total questions correctly.', icon: '💯', unlocked: false },
-  { id: 'streak_5', title: 'On A Roll', description: 'Achieve a 5-question streak.', icon: '🎯', unlocked: false },
-  { id: 'streak_10', title: 'Unstoppable', description: 'Achieve a 10-question streak.', icon: '🚀', unlocked: false },
-  { id: 'streak_20', title: 'Flow State', description: 'Achieve a 20-question streak.', icon: '👑', unlocked: false },
-  { id: 'speed_solver', title: 'Speed Solver', description: 'Earn and use 3 Time Bonuses in one run.', icon: '⚡', unlocked: false },
-  { id: 'level_master', title: 'Level Master', description: 'Reach Level 4 or higher.', icon: '🏆', unlocked: false },
-  { id: 'star_collector', title: 'Star Collector', description: 'Earn 5 stars in a single run.', icon: '⭐', unlocked: false },
-  { id: 'flawless', title: 'Flawless', description: 'Finish a run with ≥95% accuracy (min 15 Qs).', icon: '✨', unlocked: false },
-  { id: 'grand_master', title: 'Grand Master', description: 'Unlock Very Hard Mode (earn 5+ achievements).', icon: '🗝️', unlocked: false }
+  { id: 'first_step', title: 'First Breach', description: 'Decrypt your first security node.', icon: '⚡', unlocked: false },
+  { id: 'warm_up', title: 'Script Kiddie', description: 'Bypass 10 security nodes.', icon: '💾', unlocked: false },
+  { id: 'mental_gym', title: 'Data Runner', description: 'Bypass 25 security nodes.', icon: '🦾', unlocked: false },
+  { id: 'math_whiz', title: 'Master Netrunner', description: 'Bypass 50 security nodes in a single run.', icon: '🔥', unlocked: false },
+  { id: 'centurion', title: 'Gigabyte Legion', description: 'Bypass 100 total security nodes.', icon: '💯', unlocked: false },
+  { id: 'streak_5', title: 'Signal Lock', description: 'Achieve a 5-node breach streak.', icon: '🎯', unlocked: false },
+  { id: 'streak_10', title: 'Neural Overload', description: 'Achieve a 10-node breach streak.', icon: '🚀', unlocked: false },
+  { id: 'streak_20', title: 'Ghost in the Shell', description: 'Achieve a 20-node breach streak.', icon: '👑', unlocked: false },
+  { id: 'speed_solver', title: 'Overclock King', description: 'Trigger 3 Overclock injections in one run.', icon: '⚡', unlocked: false },
+  { id: 'level_master', title: 'Sector Infiltrator', description: 'Infiltrate Sector 4 or higher.', icon: '🏆', unlocked: false },
+  { id: 'star_collector', title: 'System Root', description: 'Attain 5 stars in a single run.', icon: '⭐', unlocked: false },
+  { id: 'flawless', title: 'Zero Trace', description: 'Finish a run with ≥95% accuracy (min 15 nodes).', icon: '✨', unlocked: false },
+  { id: 'grand_master', title: 'Black ICE Protocol', description: 'Unlock Black ICE Mode (earn 5+ achievements).', icon: '🗝️', unlocked: false }
 ];
 
 export class AchievementManager {
@@ -32,6 +32,12 @@ export class AchievementManager {
       ...a,
       unlocked: !!savedState?.[a.id]
     }));
+
+    // Ensure grand_master is unlocked if player already holds 5+ achievements
+    if (this.getUnlockedCount() >= 5) {
+      const gm = this.achievements.find(a => a.id === 'grand_master');
+      if (gm) gm.unlocked = true;
+    }
   }
 
   public setUnlockCallback(cb: (a: Achievement) => void): void {
@@ -68,9 +74,6 @@ export class AchievementManager {
         a.unlocked = true;
         a.unlockedAt = Date.now();
         newlyUnlocked.push(a);
-        if (this.onUnlockCallback) {
-          this.onUnlockCallback(a);
-        }
       }
     };
 
@@ -98,14 +101,22 @@ export class AchievementManager {
       tryUnlock('grand_master');
     }
 
+    if (newlyUnlocked.length > 0 && this.onUnlockCallback) {
+      newlyUnlocked.forEach(a => this.onUnlockCallback?.(a));
+    }
+
     return newlyUnlocked;
   }
 
   public serialize(): Record<string, boolean> {
     const map: Record<string, boolean> = {};
-    for (const a of this.achievements) {
-      if (a.unlocked) map[a.id] = true;
-    }
+    this.achievements.forEach(a => {
+      map[a.id] = a.unlocked;
+    });
     return map;
+  }
+
+  public getProgressPercentage(): number {
+    return Math.round((this.getUnlockedCount() / this.achievements.length) * 100);
   }
 }

@@ -9,6 +9,7 @@ export class StreakManager {
 
   public reset(): void {
     this.currentStreak = 0;
+    this.bestStreak = 0;
     this.fastCorrectStreak = 0;
     this.timeBonusCharges = 0;
     this.lastQuestionStartTime = performance.now();
@@ -18,19 +19,22 @@ export class StreakManager {
     this.lastQuestionStartTime = performance.now();
   }
 
-  public recordCorrectAnswer(): { isFast: boolean; bonusReady: boolean; streak: number } {
+  public recordCorrectAnswer(
+    thresholdMs: number = GAME_CONFIG.fastAnswerThresholdMs,
+    targetFastStreak: number = GAME_CONFIG.fastAnswersForTimeBonus
+  ): { isFast: boolean; bonusReady: boolean; streak: number } {
     const elapsed = performance.now() - this.lastQuestionStartTime;
     this.currentStreak++;
     if (this.currentStreak > this.bestStreak) {
       this.bestStreak = this.currentStreak;
     }
 
-    const isFast = elapsed <= GAME_CONFIG.fastAnswerThresholdMs;
+    const isFast = elapsed <= thresholdMs;
     let bonusReady = false;
 
     if (isFast) {
       this.fastCorrectStreak++;
-      if (this.fastCorrectStreak >= GAME_CONFIG.fastAnswersForTimeBonus) {
+      if (this.fastCorrectStreak >= targetFastStreak) {
         this.fastCorrectStreak = 0;
         this.timeBonusCharges = Math.min(3, this.timeBonusCharges + 1);
         bonusReady = true;

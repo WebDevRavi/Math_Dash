@@ -2,50 +2,78 @@ export type DifficultyMode = 'EASY' | 'NORMAL' | 'HARD' | 'VERY_HARD';
 
 export interface DifficultySettings {
   name: string;
+  cyberLabel: string;
   operations: ('+' | '-' | '×' | '÷')[];
   operandRangeA: [number, number];
   operandRangeB: [number, number];
   timeLimitSec: number;
+  wrongPenaltySec: number;
+  fastThresholdMs: number;
+  fastStreakForBonus: number;
 }
 
 export const DIFFICULTY_PRESETS: Record<DifficultyMode, DifficultySettings> = {
   EASY: {
-    name: 'Easy',
+    name: 'Proxy',
+    cyberLabel: 'PROXY',
     operations: ['+', '-'],
-    operandRangeA: [1, 12],
-    operandRangeB: [1, 10],
-    timeLimitSec: 60
+    operandRangeA: [5, 25],
+    operandRangeB: [3, 18],
+    timeLimitSec: 45,
+    wrongPenaltySec: 2,
+    fastThresholdMs: 1600,
+    fastStreakForBonus: 3
   },
   NORMAL: {
-    name: 'Normal',
+    name: 'Firewall',
+    cyberLabel: 'FIREWALL',
     operations: ['+', '-', '×', '÷'],
-    operandRangeA: [2, 20],
-    operandRangeB: [2, 12],
-    timeLimitSec: 60
+    operandRangeA: [12, 55],
+    operandRangeB: [6, 35],
+    timeLimitSec: 40,
+    wrongPenaltySec: 2,
+    fastThresholdMs: 1400,
+    fastStreakForBonus: 3
   },
   HARD: {
-    name: 'Hard',
+    name: 'Mainframe',
+    cyberLabel: 'MAINFRAME',
     operations: ['+', '-', '×', '÷'],
-    operandRangeA: [5, 45],
-    operandRangeB: [3, 20],
-    timeLimitSec: 60
+    operandRangeA: [18, 95],
+    operandRangeB: [8, 55],
+    timeLimitSec: 30,
+    wrongPenaltySec: 3,
+    fastThresholdMs: 1200,
+    fastStreakForBonus: 4
   },
   VERY_HARD: {
-    name: 'Very Hard',
+    name: 'Black ICE',
+    cyberLabel: 'BLACK ICE',
     operations: ['+', '-', '×', '÷'],
-    operandRangeA: [10, 80],
-    operandRangeB: [4, 30],
-    timeLimitSec: 45
+    operandRangeA: [25, 140],
+    operandRangeB: [12, 85],
+    timeLimitSec: 25,
+    wrongPenaltySec: 3,
+    fastThresholdMs: 1000,
+    fastStreakForBonus: 4
   }
 };
 
 export class LevelProgression {
+  /**
+   * Steeper and faster sector progression:
+   * Reaches Sector 2 at 6 points, Sector 3 at 14 points, up to Sector 10+
+   */
   public static getLevelForScore(score: number): number {
-    if (score < 8) return 1;
-    if (score < 18) return 2;
-    if (score < 30) return 3;
-    if (score < 45) return 4;
-    if (score < 65) return 5;
-    return Math.min(10, 5 + Math.floor((score - 65) / 20));
+    if (score < 6) return 1;
+    if (score < 14) return 2;
+    if (score < 24) return 3;
+    if (score < 36) return 4;
+    if (score < 50) return 5;
+    if (score < 66) return 6;
+    if (score < 84) return 7;
+    if (score < 105) return 8;
+    if (score < 130) return 9;
+    return Math.min(20, 10 + Math.floor((score - 130) / 25));
   }
 }

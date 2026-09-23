@@ -1,7 +1,8 @@
 {
-  "name": "math-dash",
+  "name": "cyber-hack-overdrive",
+  "description": "High-Speed Cyberpunk Decryption Arcade Game",
   "private": true,
-  "version": "1.0.0",
+  "version": "2.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",

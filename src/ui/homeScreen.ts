@@ -1,4 +1,5 @@
 import { DifficultyMode } from '../core/difficulty.ts';
+import { CrazyUser } from '../platform/platformInterface.ts';
 
 export interface HomeScreenCallbacks {
   onPlay: () => void;
@@ -7,7 +8,15 @@ export interface HomeScreenCallbacks {
   onOpenAchievements: () => void;
   onSelectDifficulty: (mode: DifficultyMode) => void;
   onOpenStats: () => void;
+  onLogin?: () => void;
 }
+
+const CYBER_DIFF_LABELS: Record<DifficultyMode, string> = {
+  EASY: 'PROXY',
+  NORMAL: 'FIREWALL',
+  HARD: 'MAINFRAME',
+  VERY_HARD: 'BLACK ICE'
+};
 
 export class HomeScreen {
   private container: HTMLElement;
@@ -15,6 +24,8 @@ export class HomeScreen {
   private isSoundOn: boolean;
   private isVeryHardUnlocked: boolean;
   private currentDifficulty: DifficultyMode;
+  private user: CrazyUser | null = null;
+  private showLoginChip: boolean = false;
 
   constructor(
     container: HTMLElement,
@@ -23,6 +34,8 @@ export class HomeScreen {
       isSoundOn: boolean;
       isVeryHardUnlocked: boolean;
       currentDifficulty: DifficultyMode;
+      user?: CrazyUser | null;
+      showLoginChip?: boolean;
     }
   ) {
     this.container = container;
@@ -30,6 +43,8 @@ export class HomeScreen {
     this.isSoundOn = initialState.isSoundOn;
     this.isVeryHardUnlocked = initialState.isVeryHardUnlocked;
     this.currentDifficulty = initialState.currentDifficulty;
+    this.user = initialState.user ?? null;
+    this.showLoginChip = initialState.showLoginChip ?? false;
     this.render();
   }
 
@@ -37,10 +52,14 @@ export class HomeScreen {
     isSoundOn?: boolean;
     isVeryHardUnlocked?: boolean;
     currentDifficulty?: DifficultyMode;
+    user?: CrazyUser | null;
+    showLoginChip?: boolean;
   }): void {
     if (state.isSoundOn !== undefined) this.isSoundOn = state.isSoundOn;
     if (state.isVeryHardUnlocked !== undefined) this.isVeryHardUnlocked = state.isVeryHardUnlocked;
     if (state.currentDifficulty !== undefined) this.currentDifficulty = state.currentDifficulty;
+    if (state.user !== undefined) this.user = state.user ?? null;
+    if (state.showLoginChip !== undefined) this.showLoginChip = state.showLoginChip;
     this.render();
   }
 
@@ -51,18 +70,32 @@ export class HomeScreen {
       <div class="screen-home anim-fade">
         <!-- Top Utility Bar: Info & Sound -->
         <div class="home-top-bar">
-          <button class="icon-btn" id="btn-home-info" title="Instructions & How to Play" aria-label="Instructions">
-            i
+          <button class="icon-btn cyber-icon-btn" id="btn-home-info" title="Mission Briefing & Rules" aria-label="Instructions">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="16" x2="12" y2="12"></line>
+              <line x1="12" y1="8" x2="12.01" y2="8"></line>
+            </svg>
           </button>
-          <button class="icon-btn" id="btn-home-sound" title="Toggle Sound" aria-label="Toggle Sound">
+          ${this.user ? `
+            <div class="home-user-badge cyber-badge" title="CrazyGames Profile: ${this.user.username}">
+              ${this.user.profilePictureUrl ? `<img src="${this.user.profilePictureUrl}" class="home-user-avatar" alt="Avatar" />` : '👤'}
+              <span class="home-user-name">${this.user.username}</span>
+            </div>
+          ` : (this.showLoginChip ? `
+            <button class="home-login-chip cyber-login-chip" id="btn-home-login" title="Log in with CrazyGames to sync profile across devices">
+              <span>👤 NETRUNNER LOGIN</span>
+            </button>
+          ` : '')}
+          <button class="icon-btn cyber-icon-btn" id="btn-home-sound" title="Toggle Sound" aria-label="Toggle Sound">
             ${this.isSoundOn ? `
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
                 <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
                 <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
               </svg>
             ` : `
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
                 <line x1="23" y1="9" x2="17" y2="15"></line>
                 <line x1="17" y1="9" x2="23" y2="15"></line>
@@ -73,77 +106,74 @@ export class HomeScreen {
 
         <!-- Brand & Title Header -->
         <div class="home-brand-area">
-          <svg class="home-crown" viewBox="0 0 100 60" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M10 50 L20 15 L50 35 L80 15 L90 50 Z" />
-            <line x1="20" y1="5" x2="20" y2="8" />
-            <line x1="50" y1="18" x2="50" y2="22" />
-            <line x1="80" y1="5" x2="80" y2="8" />
-          </svg>
+          <!-- Cyberpunk Netrunner Emblem -->
+          <div class="cyber-emblem">
+            <svg width="68" height="42" viewBox="0 0 100 60" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="50,4 90,26 80,54 20,54 10,26" stroke="#00f0ff" stroke-width="3" fill="rgba(0, 240, 255, 0.08)" />
+              <path d="M30 36 L44 22 L56 38 L70 24" stroke="#ff0055" stroke-width="3.5" />
+              <circle cx="50" cy="38" r="3" fill="#ffb700" />
+            </svg>
+          </div>
 
-          <h1 class="home-title">
-            <span class="white-text">MATH</span>
-            <span class="yellow-text">DASH</span>
+          <h1 class="home-title cyber-title">
+            <span class="cyan-text">CYBER</span>
+            <span class="magenta-text">HACK</span>
+            <span class="overdrive-pill">OVERDRIVE</span>
           </h1>
 
-          <div class="home-tagline">
-            <span class="think-fast">Think Fast. </span>
-            <span class="solve-faster">Solve Faster!</span>
+          <div class="home-tagline cyber-tagline">
+            <span class="tag-p1">BREACH THE MAINFRAME</span>
+            <span class="tag-sep">•</span>
+            <span class="tag-p2">OVERCLOCK YOUR BRAIN</span>
           </div>
         </div>
 
-        <!-- Center Large PLAY Button -->
+        <!-- Center Large BREACH Button -->
         <div class="home-center-play">
-          <button class="home-play-btn anim-pop" id="btn-home-play" aria-label="Start Game">
+          <button class="home-play-btn cyber-play-btn anim-pop" id="btn-home-play" aria-label="Start Infiltration">
+            <div class="play-btn-glow"></div>
             <svg viewBox="0 0 24 24">
               <polygon points="6 3 20 12 6 21 6 3"></polygon>
             </svg>
           </button>
-          <span class="home-play-label">PLAY</span>
+          <span class="home-play-label cyber-play-label">BREACH</span>
         </div>
 
-        <!-- Difficulty Mode Selector Bar -->
+        <!-- Security Level / Difficulty Selector Bar -->
         <div class="home-difficulty-bar">
           ${modes.map(mode => {
             const isLocked = mode === 'VERY_HARD' && !this.isVeryHardUnlocked;
             const isActive = this.currentDifficulty === mode;
-            const label = mode === 'VERY_HARD' ? (isLocked ? 'VERY HARD 🔒' : 'VERY HARD ⚡') : mode;
+            const cyberLabel = CYBER_DIFF_LABELS[mode];
+            const displayLabel = mode === 'VERY_HARD' ? (isLocked ? `${cyberLabel} 🔒` : `${cyberLabel} ⚡`) : cyberLabel;
             return `
               <button 
-                class="diff-pill-btn ${isActive ? 'active' : ''} ${isLocked ? 'locked' : ''}" 
+                class="diff-pill-btn cyber-pill-btn ${isActive ? 'active' : ''} ${isLocked ? 'locked' : ''}" 
                 data-mode="${mode}"
-                ${isLocked ? 'title="Unlock 5 achievements to play Very Hard"' : ''}
+                ${isLocked ? 'title="Unlock 5 achievements to decrypt Black ICE"' : ''}
               >
-                ${label}
+                ${displayLabel}
               </button>
             `;
           }).join('')}
         </div>
 
-        <!-- Bottom Actions: Achievements, Very Hard Toggle, Statistics -->
+        <!-- Bottom Actions: Achievements, Black ICE Toggle, Statistics -->
         <div class="home-bottom-actions">
           <div class="sub-action-item">
-            <button class="sub-action-btn btn-achievements" id="btn-home-achievements" aria-label="Achievements">
+            <button class="sub-action-btn cyber-sub-btn btn-achievements" id="btn-home-achievements" aria-label="Achievements">
               <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M6 9H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h2"></path>
-                <path d="M18 9h2a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2h-2"></path>
-                <path d="M4 22h16"></path>
-                <path d="M10 14.66V17c0 .55-.45 1-1 1H7v4h10v-4h-2c-.55 0-1-.45-1-1v-2.34"></path>
-                <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"></path>
+                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
               </svg>
             </button>
-            <span class="sub-action-label btn-achievements">Achievements</span>
+            <span class="sub-action-label cyber-sub-label">BADGES</span>
           </div>
 
           <div class="sub-action-item">
-            <button class="sub-action-btn btn-veryhard ${this.isVeryHardUnlocked ? '' : 'locked'} ${this.currentDifficulty === 'VERY_HARD' ? 'active' : ''}" id="btn-home-veryhard" aria-label="Toggle Very Hard Mode">
+            <button class="sub-action-btn cyber-sub-btn btn-veryhard ${this.isVeryHardUnlocked ? '' : 'locked'} ${this.currentDifficulty === 'VERY_HARD' ? 'active' : ''}" id="btn-home-veryhard" aria-label="Toggle Black ICE Mode">
               ${this.isVeryHardUnlocked ? `
                 <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <circle cx="12" cy="13" r="8"></circle>
-                  <path d="M12 9v4l2 2"></path>
-                  <path d="M5 3L2 6"></path>
-                  <path d="M22 6l-3-3"></path>
-                  <path d="M6 13H2"></path>
-                  <path d="M22 13h-4"></path>
+                  <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
                 </svg>
               ` : `
                 <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -152,21 +182,26 @@ export class HomeScreen {
                 </svg>
               `}
             </button>
-            <span class="sub-action-label btn-veryhard">
-              ${this.isVeryHardUnlocked ? (this.currentDifficulty === 'VERY_HARD' ? '⚡ VERY HARD' : 'VERY HARD') : 'LOCKED 🔒'}
+            <span class="sub-action-label cyber-sub-label btn-veryhard">
+              ${this.isVeryHardUnlocked ? (this.currentDifficulty === 'VERY_HARD' ? '⚡ BLACK ICE' : 'BLACK ICE') : 'BLACK ICE 🔒'}
             </span>
           </div>
 
           <div class="sub-action-item">
-            <button class="sub-action-btn btn-stats" id="btn-home-stats" aria-label="Statistics">
+            <button class="sub-action-btn cyber-sub-btn btn-stats" id="btn-home-stats" aria-label="Telemetry & Statistics">
               <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <line x1="18" y1="20" x2="18" y2="10"></line>
                 <line x1="12" y1="20" x2="12" y2="4"></line>
                 <line x1="6" y1="20" x2="6" y2="14"></line>
               </svg>
             </button>
-            <span class="sub-action-label btn-stats">Statistics</span>
+            <span class="sub-action-label cyber-sub-label">TELEMETRY</span>
           </div>
+        </div>
+
+        <!-- Creator Credits -->
+        <div class="home-creator-credits-wrapper">
+          <span class="home-creator-credit cyber-credit">CYBER HACK: OVERDRIVE // CREATED BY RAVI SOLANKI</span>
         </div>
       </div>
     `;
@@ -181,16 +216,18 @@ export class HomeScreen {
     const achBtn = document.getElementById('btn-home-achievements');
     const veryHardBtn = document.getElementById('btn-home-veryhard');
     const statsBtn = document.getElementById('btn-home-stats');
+    const loginBtn = document.getElementById('btn-home-login');
 
     playBtn?.addEventListener('click', () => this.callbacks.onPlay());
     infoBtn?.addEventListener('click', () => this.callbacks.onOpenInstructions());
     soundBtn?.addEventListener('click', () => this.callbacks.onToggleSound());
     achBtn?.addEventListener('click', () => this.callbacks.onOpenAchievements());
     statsBtn?.addEventListener('click', () => this.callbacks.onOpenStats());
+    loginBtn?.addEventListener('click', () => this.callbacks.onLogin?.());
 
     veryHardBtn?.addEventListener('click', () => {
       if (!this.isVeryHardUnlocked) {
-        this.callbacks.onSelectDifficulty('VERY_HARD'); // will trigger locked audio/alert
+        this.callbacks.onSelectDifficulty('VERY_HARD');
       } else {
         const next = this.currentDifficulty === 'VERY_HARD' ? 'NORMAL' : 'VERY_HARD';
         this.callbacks.onSelectDifficulty(next);
