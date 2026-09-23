@@ -3,32 +3,13 @@
    Replaces chalkboard framing with high-tech Cyberpunk Rig
    ==================================================== */
 
-/* Mobile Landscape Auto-Orientation:
-   Forces the game into landscape orientation across all mobile devices */
+/* Responsive mobile portrait adjustments */
 @media screen and (orientation: portrait) and (max-width: 1024px) {
-  html, body {
-    width: 100vw;
-    height: 100vh;
-    overflow: hidden !important;
-    position: fixed !important;
-  }
-
-  #app {
-    width: 100vh !important;
-    height: 100vw !important;
-    transform: rotate(90deg) !important;
-    transform-origin: top left !important;
-    position: fixed !important;
-    top: 0 !important;
-    left: 100vw !important;
-    overflow: hidden !important;
-  }
-
   .game-viewport {
-    width: 100vh !important;
-    height: 100vw !important;
+    padding: 4px;
   }
 }
+
 
 /* Main Game Viewport with 16:9 Aspect Ratio */
 .game-viewport {

@@ -64,19 +64,45 @@ class MathDashApp {
   private isProcessingAnswer: boolean = false;
 
   public async init(): Promise<void> {
-    // 1. Initialize Platform layer
-    const isCrazyGamesEnv = typeof window !== 'undefined' && !!window.CrazyGames?.SDK;
-    this.platform = isCrazyGamesEnv ? new CrazyGamesAdapter() : new LocalDevAdapter();
-    await this.platform.init();
-    this.platform.loadingStart();
+    // 1. Initialize Platform layer with smart environment detection
+    const isIframe = typeof window !== 'undefined' && window.self !== window.top;
+    const isCrazyGamesHost = typeof window !== 'undefined' && (
+      window.location.hostname.includes('crazygames') ||
+      (isIframe && typeof document !== 'undefined' && document.referrer.includes('crazygames'))
+    );
+    const hasCrazySDK = typeof window !== 'undefined' && !!window.CrazyGames?.SDK;
+
+    // Use CrazyGamesAdapter if hosted on CrazyGames, or LocalDevAdapter for standalone (e.g. Vercel, local)
+    if (hasCrazySDK && isCrazyGamesHost) {
+      this.platform = new CrazyGamesAdapter();
+    } else {
+      this.platform = new LocalDevAdapter();
+    }
+
+    try {
+      await this.platform.init();
+      this.platform.loadingStart();
+    } catch (e) {
+      console.warn('Platform initialization skipped:', e);
+    }
 
     // Initialize Orientation Overlay (enforces mobile landscape mode)
     this.orientationOverlay = new OrientationOverlay();
 
-    // 2. Load Save Data & Platform User
+    // 2. Load Save Data & Platform User safely with fallbacks
     this.saveService = new SaveService(this.platform);
-    const saved = await this.saveService.load();
-    this.currentUser = await this.platform.getUser();
+    let saved: any = null;
+    try {
+      saved = await this.saveService.load();
+    } catch (e) {
+      console.warn('Save data loading skipped:', e);
+    }
+
+    try {
+      this.currentUser = await this.platform.getUser();
+    } catch (e) {
+      console.warn('User fetch skipped:', e);
+    }
 
     const initialSound = saved?.settings?.sound ?? true;
     this.showInstructionsSetting = saved?.settings?.showInstructions ?? false;
@@ -85,21 +111,29 @@ class MathDashApp {
     // 3. Initialize Core Managers
     this.audioService = new AudioService(initialSound);
 
-    // Sync platform muteAudio setting (CrazyGames requirement)
-    this.platform.onSettingsChange((settings) => {
-      this.audioService.setPlatformMuted(settings.muteAudio ?? false);
-    });
+    // Sync platform muteAudio setting
+    try {
+      this.platform.onSettingsChange((settings) => {
+        this.audioService.setPlatformMuted(settings.muteAudio ?? false);
+      });
+    } catch {
+      // ignore
+    }
 
     // Listen for CrazyGames user authentication
-    this.platform.addAuthListener(async (user) => {
-      this.currentUser = user;
-      if (user) {
-        this.showToast(`👤 Netrunner ID Synced: ${user.username}`);
-      }
-      if (this.stateMachine.getState() === 'HOME') {
-        this.renderHomeScreen();
-      }
-    });
+    try {
+      this.platform.addAuthListener(async (user) => {
+        this.currentUser = user;
+        if (user) {
+          this.showToast(`👤 Netrunner ID Synced: ${user.username}`);
+        }
+        if (this.stateMachine && this.stateMachine.getState() === 'HOME') {
+          this.renderHomeScreen();
+        }
+      });
+    } catch {
+      // ignore
+    }
 
     this.stateMachine = new StateMachine('BOOT');
     this.questionGenerator = new QuestionGenerator();
@@ -764,8 +798,16 @@ class MathDashApp {
   }
 }
 
-// Start application when DOM is ready
-window.addEventListener('DOMContentLoaded', () => {
+// Robust application startup: executes immediately if DOM is already loaded
+function bootApp(): void {
   const app = new MathDashApp();
-  app.init().catch(err => console.error('Cyber Hack initialization error:', err));
-});
+  app.init().catch(err => {
+    console.error('Cyber Hack initialization error:', err);
+  });
+}
+
+if (document.readyState === 'loading') {
+  window.addEventListener('DOMContentLoaded', bootApp);
+} else {
+  bootApp();
+}

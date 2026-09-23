@@ -10,7 +10,6 @@ export class OrientationOverlay {
     this.createOverlay();
     this.attachListeners();
     this.checkOrientation();
-    this.requestLandscapeLock();
   }
 
   private createOverlay(): void {
@@ -19,8 +18,6 @@ export class OrientationOverlay {
       return;
     }
 
-    // Auto-landscape CSS handles viewport rotation seamlessly on mobile portrait.
-    // Overlay is kept as a non-blocking floating guideline if device needs manual rotation.
     const overlay = document.createElement('div');
     overlay.id = 'orientation-overlay';
     overlay.className = 'orientation-overlay hidden';
@@ -39,8 +36,11 @@ export class OrientationOverlay {
         <div class="orientation-heading cyber-heading neon-cyan" style="font-size: 16px;">
           BEST EXPERIENCED IN LANDSCAPE
         </div>
-        <button id="btn-orientation-dismiss" class="orientation-action-btn cyber-btn" style="padding: 6px 16px; font-size: 13px;">
-          <span>✓ PLAY NOW</span>
+        <div style="font-size: 13px; color: rgba(240, 246, 252, 0.7); text-align: center; max-width: 280px;">
+          Rotate your device for optimal cyber deck terminal view.
+        </div>
+        <button id="btn-orientation-dismiss" class="orientation-action-btn cyber-btn" style="padding: 8px 20px; font-size: 13px; margin-top: 8px;">
+          <span>✓ CONTINUE</span>
         </button>
       </div>
     `;
@@ -66,11 +66,6 @@ export class OrientationOverlay {
     } catch {
       // ignore
     }
-
-    // On user gesture, attempt landscape lock
-    window.addEventListener('pointerdown', () => {
-      this.requestLandscapeLock();
-    }, { once: true });
   }
 
   public checkOrientation(): boolean {
@@ -78,10 +73,12 @@ export class OrientationOverlay {
     const isMobileSize = window.innerWidth <= 1024 || window.innerHeight <= 600;
     this.isPortrait = isVertical && isMobileSize;
 
-    // Mobile CSS auto-rotates the app to landscape. The overlay remains hidden by default
-    // unless explicitly needed.
     if (this.overlayElement) {
-      this.overlayElement.classList.add('hidden');
+      if (this.isPortrait) {
+        this.overlayElement.classList.remove('hidden');
+      } else {
+        this.overlayElement.classList.add('hidden');
+      }
     }
 
     return !this.isPortrait;

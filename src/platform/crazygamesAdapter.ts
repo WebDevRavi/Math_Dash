@@ -63,11 +63,18 @@ export class CrazyGamesAdapter implements PlatformInterface {
   private settingsListeners: ((settings: PlatformSettings) => void)[] = [];
   private authListeners: ((user: CrazyUser | null) => void)[] = [];
 
+  private withTimeout<T>(promise: Promise<T>, ms: number, fallback: T): Promise<T> {
+    return Promise.race([
+      promise,
+      new Promise<T>((resolve) => setTimeout(() => resolve(fallback), ms))
+    ]);
+  }
+
   public async init(): Promise<void> {
     try {
       if (typeof window !== 'undefined' && window.CrazyGames?.SDK) {
         this.sdk = window.CrazyGames.SDK;
-        await this.sdk.init();
+        await this.withTimeout(this.sdk.init(), 2500, undefined);
         this.isInitialized = true;
 
         // 1. Hook Settings Listener for system-wide Audio Mute
@@ -274,7 +281,7 @@ export class CrazyGamesAdapter implements PlatformInterface {
   public async getUser(): Promise<CrazyUser | null> {
     try {
       if (this.sdk?.user?.getUser) {
-        const user = await this.sdk.user.getUser();
+        const user = await this.withTimeout(this.sdk.user.getUser(), 1500, null);
         if (user && user.username) {
           return {
             username: user.username,
