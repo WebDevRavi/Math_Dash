@@ -7,7 +7,7 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-# Node modules
+# Node modules & build outputs
 node_modules
 dist
 dist-ssr
@@ -18,13 +18,56 @@ dist-ssr
 !.vscode/extensions.json
 .idea
 .DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
+*.tmp
+*.bak
 
 # Environment
 .env
 .env.*
 !.env.example
+
+# Archives & compressed files
+*.zip
+*.tar
+*.gz
+*.tar.gz
+*.rar
+*.7z
+
+# Images & raw graphics (game is fully rendered via CSS/Canvas/SVG)
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.webp
+*.bmp
+*.ico
+*.tiff
+*.psd
+*.ai
+public/assets/
+
+# Videos & audio dumps (sound is procedurally synthesized via Web Audio API)
+*.mp4
+*.mov
+*.avi
+*.webm
+*.mp3
+*.wav
+*.ogg
+
+# Art folders & internal chat / design work
+Art*/
+art*/
+*chat*
+*Chat*
+internal/
+
